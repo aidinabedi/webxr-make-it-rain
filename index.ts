@@ -1,12 +1,15 @@
 import * as pc from "playcanvas";
 
+// give game scripts access to playcanvas namespace
+(window as any).pc = pc;
+
 const options = {
     ASSET_PREFIX: "",
     SCRIPT_PREFIX: "",
-    SCENE_PATH: "798649.json",
+    SCENE_PATH: "802005.json",
     CONTEXT_OPTIONS: {
         'antialias': true,
-        'alpha': false,
+        'alpha': true,
         'preserveDrawingBuffer': false,
         'preferWebGl2': true
     },
