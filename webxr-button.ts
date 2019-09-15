@@ -266,6 +266,15 @@ const generateCSS = (options, fontSize=18)=> {
 //
 
 export class WebXRButton {
+
+  session: null;
+  readonly options: any;
+  readonly domElement: HTMLElement;
+
+  private _enabled: boolean;
+  private __defaultDisplayStyle: any;
+  private __forceDisabled: boolean;
+
   /**
    * Construct a new Enter XR Button
    * @constructor
@@ -329,7 +338,6 @@ export class WebXRButton {
   set enabled(enabled) {
     this._enabled = enabled;
     this.__updateButtonState();
-    return this;
   }
 
   /**
