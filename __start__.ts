@@ -140,13 +140,17 @@ export function startApplication(options) {
                         console.error(err);
                     }
 
-                    app.loadScene(options.SCENE_PATH, function (err, scene) {
-                        if (err) {
-                            console.error(err);
-                        }
+                    if (options.SCENE_PATH) {
+                        app.loadScene(options.SCENE_PATH, function (err, scene) {
+                            if (err) {
+                                console.error(err);
+                            }
 
+                            app.start();
+                        });
+                    } else {
                         app.start();
-                    });
+                    }
                 });
             });
         });
@@ -158,4 +162,5 @@ export function startApplication(options) {
         configure();
     }
 
+    return app as pc.Application;
 }
