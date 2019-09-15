@@ -35,35 +35,42 @@ type XREye =
     | "left"
     | "right";
 
+type XRFrameRequestCallback = (time: DOMHighResTimeStamp, frame: XRFrame) => void;
+
+interface XRSessionInit {
+    requiredFeatures: Array<any>;
+    optionalFeatures: Array<any>;
+}
+
 interface XRSpace extends EventTarget {
 
 }
 
 interface XRRenderState {
-    depthNear?: number;
-    depthFar?: number;
-    inlineVerticalFieldOfView?: number;
-    baseLayer?: XRWebGLLayer;
+    readonly depthNear?: number;
+    readonly depthFar?: number;
+    readonly inlineVerticalFieldOfView?: number;
+    readonly baseLayer?: XRWebGLLayer;
 }
 
 interface XRInputSource {
-    handedness: XRHandedness;
-    targetRayMode: XRTargetRayMode;
-    targetRaySpace: XRSpace;
-    gripSpace: XRSpace | undefined;
-    gamepad: Gamepad | undefined;
-    profiles: Array<string>;
+    readonly handedness: XRHandedness;
+    readonly targetRayMode: XRTargetRayMode;
+    readonly targetRaySpace: XRSpace;
+    readonly gripSpace: XRSpace | undefined;
+    readonly gamepad: Gamepad | undefined;
+    readonly profiles: Array<string>;
 }
 
 interface XRSession {
-    addEventListener: Function;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     requestReferenceSpace(type: XRReferenceSpaceType): Promise<XRReferenceSpace>;
     updateRenderState(XRRenderStateInit: XRRenderState): Promise<void>;
-    requestAnimationFrame: Function;
+    requestAnimationFrame(callback: XRFrameRequestCallback);
     end(): Promise<void>;
-    renderState: XRRenderState;
-    inputSources: Array<XRInputSource>;
-
+    readonly visibilityState: XRVisibilityState;
+    readonly renderState: XRRenderState;
+    readonly inputSources: Array<XRInputSource>;
 }
 
 interface XRReferenceSpace extends XRSpace {
@@ -72,18 +79,25 @@ interface XRReferenceSpace extends XRSpace {
 }
 
 interface XRFrame {
-    session: XRSession;
+    readonly session: XRSession;
     getViewerPose(referenceSpace: XRReferenceSpace): XRViewerPose | undefined;
     getPose(space: XRSpace, baseSpace: XRSpace): XRPose | undefined;
 }
 
 interface XRViewerPose extends XRPose {
-    views: Array<XRView>;
+    readonly views: Array<XRView>;
 }
 
 interface XRPose {
-    transform: XRRigidTransform;
-    emulatedPosition: boolean;
+    readonly transform: XRRigidTransform;
+    readonly emulatedPosition: boolean;
+}
+
+interface XRViewport {
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
 }
 
 declare var XRWebGLLayer: {
@@ -91,27 +105,40 @@ declare var XRWebGLLayer: {
     new(session: XRSession, context: WebGLRenderingContext | undefined): XRWebGLLayer;
 };
 interface XRWebGLLayer {
-    framebuffer: WebGLFramebuffer;
-    framebufferWidth: number;
-    framebufferHeight: number;
-    getViewport: Function;
+    readonly antialias: boolean;
+    readonly ignoreDepthValues: boolean;
+    readonly framebuffer: WebGLFramebuffer;
+    readonly framebufferWidth: number;
+    readonly framebufferHeight: number;
+    getViewport(view: XRView): XRViewport | undefined;
 }
 
 interface XRRigidTransform {
-    position: DOMPointReadOnly;
-    orientation: DOMPointReadOnly;
-    matrix: Float32Array;
-    inverse: XRRigidTransform;
+    readonly position: DOMPointReadOnly;
+    readonly orientation: DOMPointReadOnly;
+    readonly matrix: Float32Array;
+    readonly inverse: XRRigidTransform;
 }
 
 interface XRView {
-    eye: XREye;
-    projectionMatrix: Float32Array;
-    transform: XRRigidTransform;
+    readonly eye: XREye;
+    readonly projectionMatrix: Float32Array;
+    readonly transform: XRRigidTransform;
 }
 
 interface XRInputSourceChangeEvent {
-    session: XRSession;
-    removed: Array<XRInputSource>;
-    added: Array<XRInputSource>;
+    readonly session: XRSession;
+    readonly added: Array<XRInputSource>;
+    readonly removed: Array<XRInputSource>;
+}
+
+interface XR {
+    supportsSession(sessionMode: XRSessionMode): Promise<void>;
+    requestSession(sessionMode: XRSessionMode): Promise<XRSession>;
+    requestSession(sessionMode: XRSessionMode, sessionInit: XRSessionInit): Promise<XRSession>;
+    ondevicechange: any;
+}
+
+interface Navigator {
+    readonly xr?: XR;
 }
