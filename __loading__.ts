@@ -1,48 +1,48 @@
 export function createLoadingScreen(app, options) {
-    var showSplash = function () {
+    function showSplash() {
         // splash wrapper
-        var wrapper = document.createElement('div');
+        let wrapper = document.createElement('div');
         wrapper.id = 'application-splash-wrapper';
         document.body.appendChild(wrapper);
 
         // splash
-        var splash = document.createElement('div');
+        let splash = document.createElement('div');
         splash.id = 'application-splash';
         wrapper.appendChild(splash);
         splash.style.display = 'none';
 
-        var logo = document.createElement('img');
+        let logo = document.createElement('img');
         logo.src = options.ASSET_PREFIX + 'logo.png';
         splash.appendChild(logo);
         logo.onload = function () {
             splash.style.display = 'block';
         };
 
-        var container = document.createElement('div');
+        let container = document.createElement('div');
         container.id = 'progress-bar-container';
         splash.appendChild(container);
 
-        var bar = document.createElement('div');
+        let bar = document.createElement('div');
         bar.id = 'progress-bar';
         container.appendChild(bar);
 
     };
 
-    var hideSplash = function () {
-        var splash = document.getElementById('application-splash-wrapper')!;
+    function hideSplash() {
+        let splash = document.getElementById('application-splash-wrapper')!;
         splash.parentElement!.removeChild(splash);
     };
 
-    var setProgress = function (value) {
-        var bar = document.getElementById('progress-bar');
+    function setProgress(value) {
+        let bar = document.getElementById('progress-bar');
         if (bar) {
             value = Math.min(1, Math.max(0, value));
             bar.style.width = value * 100 + '%';
         }
     };
 
-    var createCss = function () {
-        var css = [
+    function createCss() {
+        let css = [
             'body {',
             '    background-color: #283538;',
             '}',
@@ -88,7 +88,7 @@ export function createLoadingScreen(app, options) {
 
         ].join('\n');
 
-        var style = document.createElement('style');
+        let style = document.createElement('style');
         style.type = 'text/css';
         if ((style as any).styleSheet) {
             (style as any).styleSheet.cssText = css;

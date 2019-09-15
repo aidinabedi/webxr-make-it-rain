@@ -3,11 +3,9 @@ import * as pc from "playcanvas";
 import {loadModules} from "./__modules__";
 
 export function startApplication(options) {
-    var CANVAS_ID = 'application-canvas';
+    const CANVAS_ID = 'application-canvas';
 
-    var canvas, devices, app;
-
-    var createCanvas = function () {
+    function createCanvas() {
         canvas = document.createElement('canvas');
         canvas.setAttribute('id', CANVAS_ID);
         canvas.setAttribute('tabindex', 0);
@@ -21,29 +19,29 @@ export function startApplication(options) {
         return canvas;
     };
 
-    var createInputDevices = function (canvas) {
-        var devices = {
+    function createInputDevices(canvas) {
+        let devices = {
             elementInput: new pc.ElementInput(canvas, {
                 useMouse: options.INPUT_SETTINGS.useMouse,
                 useTouch: options.INPUT_SETTINGS.useTouch
             }),
-            keyboard: options.INPUT_SETTINGS.useKeyboard ? new pc.Keyboard(window) : null,
-            mouse: options.INPUT_SETTINGS.useMouse ? new pc.Mouse(canvas) : null,
-            gamepads: options.INPUT_SETTINGS.useGamepads ? new pc.GamePads() : null,
-            touch: options.INPUT_SETTINGS.useTouch && pc.platform.touch ? new pc.TouchDevice(canvas) : null
+            keyboard: options.INPUT_SETTINGS.useKeyboard ? new pc.Keyboard(window) : undefined,
+            mouse: options.INPUT_SETTINGS.useMouse ? new pc.Mouse(canvas) : undefined,
+            gamepads: options.INPUT_SETTINGS.useGamepads ? new pc.GamePads() : undefined,
+            touch: options.INPUT_SETTINGS.useTouch && pc.platform.touch ? new pc.TouchDevice(canvas) : undefined
         };
 
         return devices;
     };
 
-    var configureCss = function (fillMode, width, height) {
+    function configureCss(fillMode, width, height) {
         // Configure resolution and resize event
         if (canvas.classList) {
             canvas.classList.add('fill-mode-' + fillMode);
         }
 
         // css media query for aspect ratio changes
-        var css  = "@media screen and (min-aspect-ratio: " + width + "/" + height + ") {";
+        let css  = "@media screen and (min-aspect-ratio: " + width + "/" + height + ") {";
         css += "    #application-canvas.fill-mode-KEEP_ASPECT {";
         css += "        width: auto;";
         css += "        height: 100%;";
@@ -57,12 +55,12 @@ export function startApplication(options) {
         }
     };
 
-    var reflow = function () {
+    function reflow() {
         app.resizeCanvas(canvas.width, canvas.height);
         canvas.style.width = '';
         canvas.style.height = '';
 
-        var fillMode = app._fillMode;
+        let fillMode = app._fillMode;
 
         if (fillMode == pc.FILLMODE_NONE || fillMode == pc.FILLMODE_KEEP_ASPECT) {
             if ((fillMode == pc.FILLMODE_NONE && canvas.clientHeight < window.innerHeight) || (canvas.clientWidth / canvas.clientHeight >= window.innerWidth / window.innerHeight)) {
@@ -73,8 +71,8 @@ export function startApplication(options) {
         }
     };
 
-    var displayError = function (html) {
-        var div = document.createElement('div');
+    function displayError(html) {
+        let div = document.createElement('div');
 
         div.innerHTML  = [
             '<table style="background-color: #8CE; width: 100%; height: 100%;">',
@@ -91,8 +89,9 @@ export function startApplication(options) {
         document.body.appendChild(div);
     };
 
-    canvas = createCanvas();
-    devices = createInputDevices(canvas);
+    let app;
+    let canvas = createCanvas();
+    let devices = createInputDevices(canvas);
 
     try {
         app = new pc.Application(canvas, {
@@ -120,7 +119,7 @@ export function startApplication(options) {
         return;
     }
 
-    var configure = function () {
+    function configure() {
         app.configure(options.CONFIG_FILENAME, function (err) {
             if (err) {
                 console.error(err);

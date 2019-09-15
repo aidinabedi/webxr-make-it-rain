@@ -14,7 +14,7 @@ export function loadModules(modules, urlPrefix, doneCallback) {
 
     // load a script
     function loadScriptAsync(url, doneCallback) {
-        var tag = document.createElement('script');
+        let tag = document.createElement('script');
         tag.onload = () => {
             doneCallback();
         };
@@ -48,15 +48,15 @@ export function loadModules(modules, urlPrefix, doneCallback) {
         // caller may depend on callback behaviour being async
         setTimeout(doneCallback);
     } else {
-        var asyncCounter = modules.length;
-        var asyncCallback = function () {
+        let asyncCounter = modules.length;
+        let asyncCallback = function () {
             asyncCounter--;
             if (asyncCounter === 0) {
                 doneCallback();
             }
         };
 
-        var wasm = wasmSupported();
+        let wasm = wasmSupported();
         modules.forEach(function (m) {
             if (wasm) {
                 loadWasmModuleAsync(m.moduleName, m.glueUrl, m.wasmUrl, asyncCallback);
