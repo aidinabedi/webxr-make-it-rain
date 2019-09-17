@@ -1,13 +1,11 @@
 {
-  "name": "playcanvas-npm-test",
+  "name": "webxr-make-it-rain",
   "version": "1.0.0",
   "scripts": {
-    "start": "budo index.ts:bundle.js --live -- -p [ tsify ]",
     "build": "browserify index.ts -p [ tsify ] > bundle.js"
   },
   "devDependencies": {
     "browserify": "^16.5.0",
-    "budo": "^11.6.3",
     "tsify": "^4.0.1",
     "typescript": "^3.6.2"
   },

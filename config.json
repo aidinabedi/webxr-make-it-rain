@@ -134,8 +134,8 @@
             "type": "script",
             "file": {
                 "filename": "__game-scripts.js",
-                "size": 1011,
-                "hash": "0e903153c0f32fb9f5bfc5c901d4240e",
+                "size": 1012,
+                "hash": "f30ae7ed4a99eda54f9b54efaeefdcf7",
                 "url": "__game-scripts.js"
             },
             "region": "eu-west-1",

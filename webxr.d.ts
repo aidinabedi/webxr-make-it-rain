@@ -57,20 +57,25 @@ interface XRInputSource {
     readonly handedness: XRHandedness;
     readonly targetRayMode: XRTargetRayMode;
     readonly targetRaySpace: XRSpace;
-    readonly gripSpace: XRSpace | undefined;
-    readonly gamepad: Gamepad | undefined;
+    readonly gripSpace?: XRSpace;
     readonly profiles: Array<string>;
 }
 
-interface XRSession {
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    requestReferenceSpace(type: XRReferenceSpaceType): Promise<XRReferenceSpace>;
-    updateRenderState(XRRenderStateInit: XRRenderState): Promise<void>;
-    requestAnimationFrame(callback: XRFrameRequestCallback);
-    end(): Promise<void>;
+interface XRSession extends EventTarget {
     readonly visibilityState: XRVisibilityState;
     readonly renderState: XRRenderState;
     readonly inputSources: Array<XRInputSource>;
+    updateRenderState(XRRenderStateInit: XRRenderState): Promise<void>;
+    requestReferenceSpace(type: XRReferenceSpaceType): Promise<XRReferenceSpace>;
+    requestAnimationFrame(callback: XRFrameRequestCallback): number;
+    cancelAnimationFrame(handle: number): void;
+    end(): Promise<void>;
+    onend: any;
+    onselect: any;
+    oninputsourceschange: any;
+    onselectstart: any;
+    onselectend: any;
+    onvisibilitychange: any;
 }
 
 interface XRReferenceSpace extends XRSpace {
@@ -132,7 +137,7 @@ interface XRInputSourceChangeEvent {
     readonly removed: Array<XRInputSource>;
 }
 
-interface XR {
+interface XR extends EventTarget {
     supportsSession(sessionMode: XRSessionMode): Promise<void>;
     requestSession(sessionMode: XRSessionMode): Promise<XRSession>;
     requestSession(sessionMode: XRSessionMode, sessionInit: XRSessionInit): Promise<XRSession>;

@@ -13,10 +13,10 @@ const options = {
     SCRIPT_PREFIX: "",
     SCENE_PATH: "802005.json",
     CONTEXT_OPTIONS: {
-        //'antialias':  true,
+        'antialias':  true,
         'alpha': false,
-        //'preserveDrawingBuffer': false,
-        //'preferWebGl2': true,
+        'preserveDrawingBuffer': false,
+        'preferWebGl2': true,
         'xrCompatible': true
     },
     SCRIPTS: [  ],
@@ -35,17 +35,11 @@ let app = startApplication(options)!;
 pc.script.createLoadingScreen(app => createLoadingScreen(app, options));
 
 function onSessionStarted(session: XRSession) {
-    let gl = (app.graphicsDevice as any).gl as WebGLRenderingContext;
+    session.addEventListener('end', onSessionEnded);
 
+    let gl = (app.graphicsDevice as any).gl as WebGLRenderingContext;
     let baseLayer = new XRWebGLLayer(session, gl);
     session.updateRenderState({ baseLayer });
-
-    session.requestReferenceSpace('local').then((refSpace) => {
-        xrRefSpace = refSpace;
-        session.requestAnimationFrame(onXRFrame);
-    });
-
-    app.autoRender = false;
 
     let renderTarget = new pc.RenderTarget({});
     app.scene.layers.getLayerById(pc.LAYERID_WORLD).renderTarget = renderTarget;
@@ -53,26 +47,25 @@ function onSessionStarted(session: XRSession) {
     xrRenderTarget = renderTarget as any;
     xrRenderTarget._glFrameBuffer = baseLayer.framebuffer;
 
-    let camera = app.root.findComponent('camera') as pc.CameraComponent;
-    camera.clearColorBuffer = false;
-    camera.clearDepthBuffer = false;
-    camera.clearStencilBuffer = false;
-    camera.layers = [pc.LAYERID_WORLD];
-    xrCameraNode = camera.node;
+    xrCameraEntity = app.root.findOne(node => 'camera' in node) as pc.Entity;
+    session.requestReferenceSpace('local').then(refSpace => xrLocalRefSpace = refSpace);
+
+    app.autoRender = false;
+    session.requestAnimationFrame(onXRFrame);
 }
 
 function onXRFrame(timestamp: number, frame: XRFrame) {
     let session = frame.session;
-    let pose = frame.getViewerPose(xrRefSpace);
 
-    let viewport = pose && session.renderState.baseLayer!.getViewport(pose.views[0]);
-    console.log(timestamp, { frame, pose, viewport });
+    let cameraPose = xrLocalRefSpace && frame.getViewerPose(xrLocalRefSpace);
 
-    if (pose) {
-        let pos = pose.transform.position;
-        let rot = pose.transform.orientation;
-        xrCameraNode.setPosition(pos.x, pos.y, pos.z);
-        xrCameraNode.setRotation(rot.x, rot.y, rot.z, rot.w);
+    if (cameraPose) {
+        let pos = cameraPose.transform.position;
+        let rot = cameraPose.transform.orientation;
+        xrCameraEntity.setPosition(pos.x, pos.y, pos.z);
+        xrCameraEntity.setRotation(rot.x, rot.y, rot.z, rot.w);
+
+        let viewport = session.renderState.baseLayer!.getViewport(cameraPose.views[0]);
         xrRenderTarget._colorBuffer = viewport;
         app.render();
     }
@@ -88,8 +81,8 @@ function onSessionEnded(event) {
     xrButton.setSession(null);
 }
 
-function createXRButton() {
-    let button = new WebXRButton({
+function initXR() {
+    xrButton = new WebXRButton({
         onRequestSession: onRequestSession,
         onEndSession: onEndSession,
         textEnterXRTitle: "START AR",
@@ -101,12 +94,11 @@ function createXRButton() {
         // Checks to ensure that environment integration (AR) is available,
         // and only enables the button if so.
         navigator.xr.supportsSession('immersive-ar').then(() => {
-            button.enabled = true;
+            xrButton.enabled = true;
         });
     }
 
-    document.getElementById("ar-button")!.appendChild(button.domElement);
-    return button;
+    document.getElementById("ar-button")!.appendChild(xrButton.domElement);
 }
 
 function onRequestSession() {
@@ -125,7 +117,9 @@ function onRequestSession() {
         });
 }
 
-let xrCameraNode: pc.GraphNode;
+let xrCameraEntity: pc.Entity;
 let xrRenderTarget: { _glFrameBuffer: WebGLFramebuffer, _colorBuffer?: XRViewport };
-let xrRefSpace: XRReferenceSpace;
-let xrButton = createXRButton();
+let xrLocalRefSpace: XRReferenceSpace;
+let xrButton: WebXRButton;
+
+(app as any).on("start", () => initXR());
