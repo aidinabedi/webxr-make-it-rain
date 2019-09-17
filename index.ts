@@ -98,7 +98,11 @@ function initXR() {
         });
     }
 
-    document.getElementById("ar-button")!.appendChild(xrButton.domElement);
+    document.getElementById('ar-button')!.appendChild(xrButton.domElement);
+
+    let touch = app.touch as any;
+    touch.on(pc.EVENT_TOUCHSTART, onTouchStart);
+    touch.on(pc.EVENT_TOUCHEND, onTouchEnd);
 }
 
 function onRequestSession() {
@@ -117,9 +121,21 @@ function onRequestSession() {
         });
 }
 
+function onTouchStart() {
+    console.log("onTouchStart", arguments);
+    let entity = app.root.findOne(node => node.name === 'MakeItRain') as pc.Entity;
+    entity.enabled = true;
+}
+
+function onTouchEnd() {
+    console.log("onTouchEnd", arguments);
+    let entity = app.root.findOne(node => node.name === 'MakeItRain') as pc.Entity;
+    entity.enabled = false;
+}
+
 let xrCameraEntity: pc.Entity;
 let xrRenderTarget: { _glFrameBuffer: WebGLFramebuffer, _colorBuffer?: XRViewport };
 let xrLocalRefSpace: XRReferenceSpace;
 let xrButton: WebXRButton;
 
-(app as any).on("start", () => initXR());
+(app as any).on("start", initXR);

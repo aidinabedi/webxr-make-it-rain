@@ -1,5 +1,7 @@
 Simple WebXR example that shows how PlayCanvas can be integrated with AR.
 
+Assets and game scripts are downloaded directly from [a PlayCanvas project](https://playcanvas.com/project/637244/overview/make-it-rain-webxr).
+
 
 ### Run-time requirements:
 - Most up-to-date available version of Android that the device manufacturer provides
