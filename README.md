@@ -1,4 +1,4 @@
-Simple WebXR example that shows how PlayCanvas can be integrated with AR,.
+Simple WebXR example that shows how PlayCanvas can be integrated with AR.
 
 
 Build instructions:
