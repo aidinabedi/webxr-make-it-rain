@@ -52,6 +52,9 @@ function onSessionStarted(session: XRSession) {
 
     app.autoRender = false;
     session.requestAnimationFrame(onXRFrame);
+
+    session.addEventListener('selectstart', onTouchStart);
+    session.addEventListener('selectend', onTouchEnd);
 }
 
 function onXRFrame(timestamp: number, frame: XRFrame) {
@@ -122,13 +125,11 @@ function onRequestSession() {
 }
 
 function onTouchStart() {
-    console.log("onTouchStart", arguments);
     let entity = app.root.findOne(node => node.name === 'MakeItRain') as pc.Entity;
     entity.enabled = true;
 }
 
 function onTouchEnd() {
-    console.log("onTouchEnd", arguments);
     let entity = app.root.findOne(node => node.name === 'MakeItRain') as pc.Entity;
     entity.enabled = false;
 }
