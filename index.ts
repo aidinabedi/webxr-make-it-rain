@@ -96,7 +96,7 @@ function initXR() {
     if (navigator.xr) {
         // Checks to ensure that environment integration (AR) is available,
         // and only enables the button if so.
-        navigator.xr.supportsSession('immersive-ar').then(() => {
+        navigator.xr.isSessionSupported('immersive-ar').then(() => {
             xrButton.enabled = true;
         });
     }

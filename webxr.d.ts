@@ -138,7 +138,7 @@ interface XRInputSourceChangeEvent {
 }
 
 interface XR extends EventTarget {
-    supportsSession(sessionMode: XRSessionMode): Promise<void>;
+    isSessionSupported(sessionMode: XRSessionMode): Promise<void>;
     requestSession(sessionMode: XRSessionMode): Promise<XRSession>;
     requestSession(sessionMode: XRSessionMode, sessionInit: XRSessionInit): Promise<XRSession>;
     ondevicechange: any;
