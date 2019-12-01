@@ -154,8 +154,10 @@ function initXR() {
     document.getElementById('ar-button')!.appendChild(xrButton.domElement);
 
     let touch = app.touch as any;
-    touch.on(pc.EVENT_TOUCHSTART, onTouchStart);
-    touch.on(pc.EVENT_TOUCHEND, onTouchEnd);
+    if (touch) {
+        touch.on(pc.EVENT_TOUCHSTART, onTouchStart);
+        touch.on(pc.EVENT_TOUCHEND, onTouchEnd);
+    }
 }
 
 function onRequestSession() {
