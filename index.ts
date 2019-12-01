@@ -95,10 +95,21 @@ function renderPlanes(frame: XRFrame) {
         if ("detectedPlanes" in worldInformation) {
             let detectedPlanes = worldInformation.detectedPlanes;
 
+            let floorY = Number.POSITIVE_INFINITY;
             for (let plane of detectedPlanes) {
+
                 let planeTransform = (frame as XRFrame).getPose(plane.planeSpace, xrLocalRefSpace)!.transform;
                 let planeVertices = plane.polygon as pc.Vec3[];
+
                 renderPlane(planeVertices, planeTransform);
+
+                let planeY = planeTransform.position.y;
+                if (floorY > planeY) floorY = planeTransform.position.y;
+            }
+
+            if (floorY !== Number.POSITIVE_INFINITY) {
+                let floorEntity = app.root.findByName("Floor");
+                floorEntity.setPosition(0, floorY, 0);
             }
         }
     }
