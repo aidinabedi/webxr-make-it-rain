@@ -101,6 +101,7 @@ function renderPlanes(frame: XRFrame) {
                 let planeTransform = (frame as XRFrame).getPose(plane.planeSpace, xrLocalRefSpace)!.transform;
                 let planeVertices = plane.polygon as pc.Vec3[];
 
+                console.log("plane:", plane);
                 renderPlane(planeVertices, planeTransform);
 
                 let planeY = planeTransform.position.y;
