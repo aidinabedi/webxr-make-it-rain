@@ -37,6 +37,14 @@ pc.script.createLoadingScreen(app => createLoadingScreen(app, options));
 function onSessionStarted(session: XRSession) {
     session.addEventListener('end', onSessionEnded);
 
+    if ("updateWorldTrackingState" in session) {
+        (session as any).updateWorldTrackingState({
+            planeDetectionState : {
+                enabled : true
+            }
+        });
+    }
+
     let gl = (app.graphicsDevice as any).gl as WebGLRenderingContext;
     let baseLayer = new XRWebGLLayer(session, gl);
     session.updateRenderState({ baseLayer });
@@ -63,17 +71,47 @@ function onXRFrame(timestamp: number, frame: XRFrame) {
     let cameraPose = xrLocalRefSpace && frame.getViewerPose(xrLocalRefSpace);
 
     if (cameraPose) {
-        let pos = cameraPose.transform.position;
-        let rot = cameraPose.transform.orientation;
+        let cameraTransform = cameraPose.transform;
+
+        let pos = cameraTransform.position;
+        let rot = cameraTransform.orientation;
         xrCameraEntity.setPosition(pos.x, pos.y, pos.z);
         xrCameraEntity.setRotation(rot.x, rot.y, rot.z, rot.w);
 
         let viewport = session.renderState.baseLayer!.getViewport(cameraPose.views[0]);
         xrRenderTarget._colorBuffer = viewport;
+
+        renderPlanes(frame);
         app.render();
     }
 
     session.requestAnimationFrame(onXRFrame);
+}
+
+function renderPlanes(frame: XRFrame) {
+    if ("worldInformation" in frame) {
+        let worldInformation = (frame as any).worldInformation;
+
+        if ("detectedPlanes" in worldInformation) {
+            let detectedPlanes = worldInformation.detectedPlanes;
+
+            for (let plane of detectedPlanes) {
+                let planeTransform = (frame as XRFrame).getPose(plane.planeSpace, xrLocalRefSpace)!.transform;
+                let planeVertices = plane.polygon as pc.Vec3[];
+                renderPlane(planeVertices, planeTransform);
+            }
+        }
+    }
+}
+
+function renderPlane(vertices: pc.Vec3[], transform: XRRigidTransform) {
+    let pos = transform.position as any as pc.Vec3;
+    let rot = transform.orientation as any as pc.Quat;
+    let matrix = new pc.Mat4().setTRS(pos, rot, pc.Vec3.ONE);
+    let position = vertices.map(vertex => matrix.transformPoint(vertex));
+
+    let color = new pc.Color(0, 1, 0);
+    app.renderLines(position, color as any);
 }
 
 function onEndSession(session) {
