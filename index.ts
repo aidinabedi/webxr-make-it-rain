@@ -96,7 +96,7 @@ function renderPlanes(frame: XRFrame) {
             let detectedPlanes = worldInformation.detectedPlanes;
 
             let floorY = Number.POSITIVE_INFINITY;
-            for (let plane of detectedPlanes) {
+            detectedPlanes.forEach(plane => {
 
                 let planeTransform = (frame as XRFrame).getPose(plane.planeSpace, xrLocalRefSpace)!.transform;
                 let planeVertices = plane.polygon as pc.Vec3[];
@@ -107,6 +107,7 @@ function renderPlanes(frame: XRFrame) {
                 let planeY = planeTransform.position.y;
                 if (floorY > planeY) floorY = planeTransform.position.y;
             }
+            });
 
             if (floorY !== Number.POSITIVE_INFINITY) {
                 let floorEntity = app.root.findByName("Floor");
