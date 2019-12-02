@@ -102,17 +102,17 @@ function renderPlanes(frame: XRFrame) {
                 let planeTransform = (frame as XRFrame).getPose(plane.planeSpace, xrLocalRefSpace)!.transform;
                 let planeVertices = plane.polygon as pc.Vec3[];
 
-                console.log("plane:", plane);
                 renderPlane(planeVertices, planeTransform);
 
-                let planeY = planeTransform.position.y;
-                if (floorY > planeY) floorY = planeTransform.position.y;
-            }
+                if (plane.orientation === "Horizontal") {
+                    let planeY = planeTransform.position.y;
+                    if (floorY > planeY) floorY = planeTransform.position.y;
+                }
             });
 
             if (floorY !== Number.POSITIVE_INFINITY) {
-                let floorEntity = app.root.findByName("Floor");
-                floorEntity.setPosition(0, floorY, 0);
+                let floorEntity = app.root.findByName("Floor") as pc.Entity;
+                floorEntity.rigidbody!.teleport(0, floorY - 0.5, 0);
             }
         }
     }

@@ -62,19 +62,7 @@
 			"rotation": [0, 0, 0],
 			"tags": [],
 			"enabled": true,
-			"children": ["7c0e3692-d331-11e9-97ae-026349a27a7c", "19a86304-2866-4728-ab19-23fa43b0f3e6", "36c6993b-3cfb-4f97-a19c-2114bc9d0df1"]
-		},
-		"19a86304-2866-4728-ab19-23fa43b0f3e6": {
-			"name": "Floor",
-			"tags": [],
-			"enabled": true,
-			"resource_id": "19a86304-2866-4728-ab19-23fa43b0f3e6",
-			"parent": "7c0e3691-d331-11e9-97ae-026349a27a7c",
-			"children": ["9ed4f334-7d71-4bb2-9cef-07fe188a1a69"],
-			"position": [0, -1.6, 0],
-			"rotation": [0, 0, 0],
-			"scale": [1, 1, 1],
-			"components": {}
+			"children": ["7c0e3692-d331-11e9-97ae-026349a27a7c", "9ed4f334-7d71-4bb2-9cef-07fe188a1a69", "36c6993b-3cfb-4f97-a19c-2114bc9d0df1"]
 		},
 		"b7935b75-b474-4334-9b00-6376a19e539b": {
 			"name": "MakeItRain",
@@ -154,11 +142,11 @@
 			}
 		},
 		"9ed4f334-7d71-4bb2-9cef-07fe188a1a69": {
-			"name": "Box",
+			"name": "Floor",
 			"tags": [],
 			"enabled": true,
 			"resource_id": "9ed4f334-7d71-4bb2-9cef-07fe188a1a69",
-			"parent": "19a86304-2866-4728-ab19-23fa43b0f3e6",
+			"parent": "7c0e3691-d331-11e9-97ae-026349a27a7c",
 			"children": [],
 			"position": [0, -0.5, 0],
 			"rotation": [0, 0, 0],
@@ -169,9 +157,9 @@
 					"type": "box",
 					"asset": null,
 					"materialAsset": null,
-					"castShadows": true,
-					"castShadowsLightmap": true,
-					"receiveShadows": true,
+					"castShadows": false,
+					"castShadowsLightmap": false,
+					"receiveShadows": false,
 					"lightmapped": false,
 					"lightmapSizeMultiplier": 1,
 					"castShadowsLightMap": true,
