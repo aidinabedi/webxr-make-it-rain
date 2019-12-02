@@ -123,8 +123,8 @@ function renderPlanes(frame: XRFrame) {
 }
 
 function renderPlane(planeVertices: pc.Vec3[], planeTransform: XRRigidTransform) {
-    let worldPos = planeTransform.position as any as pc.Vec3;
-    let worldRot = planeTransform.orientation as any as pc.Quat;
+    let worldPos = planeTransform.position as any;
+    let worldRot = planeTransform.orientation as any;
     let worldTransform = new pc.Mat4().setTRS(worldPos, worldRot, pc.Vec3.ONE);
 
     let worldVertices = planeVertices.map(vertex => worldTransform.transformPoint(vertex));
@@ -135,8 +135,8 @@ function renderPlane(planeVertices: pc.Vec3[], planeTransform: XRRigidTransform)
         return lines;
     }, []);
 
-    let color = new pc.Color(0, 1, 0);
-    app.renderLines(lines, color as any);
+    let color = new pc.Color(0, 1, 0) as any;
+    app.renderLines(lines, color);
 }
 
 function onEndSession(session) {
@@ -166,7 +166,7 @@ function initXR() {
 
     document.getElementById('ar-button')!.appendChild(xrButton.domElement);
 
-    let touch = app.touch as any;
+    let touch = app.touch;
     if (touch) {
         touch.on(pc.EVENT_TOUCHSTART, onTouchStart);
         touch.on(pc.EVENT_TOUCHEND, onTouchEnd);
@@ -205,4 +205,4 @@ let xrRenderTarget: { _glFrameBuffer: WebGLFramebuffer, _colorBuffer?: XRViewpor
 let xrLocalRefSpace: XRReferenceSpace;
 let xrButton: WebXRButton;
 
-(app as any).on("start", initXR);
+app.on("start", initXR);
