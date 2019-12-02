@@ -10,6 +10,6 @@
     "typescript": "^3.6.2"
   },
   "dependencies": {
-    "playcanvas": "^1.23.0"
+    "playcanvas": "^1.23.5"
   }
 }
