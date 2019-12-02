@@ -118,14 +118,21 @@ function renderPlanes(frame: XRFrame) {
     }
 }
 
-function renderPlane(vertices: pc.Vec3[], transform: XRRigidTransform) {
-    let pos = transform.position as any as pc.Vec3;
-    let rot = transform.orientation as any as pc.Quat;
-    let matrix = new pc.Mat4().setTRS(pos, rot, pc.Vec3.ONE);
-    let position = vertices.map(vertex => matrix.transformPoint(vertex));
+function renderPlane(planeVertices: pc.Vec3[], planeTransform: XRRigidTransform) {
+    let worldPos = planeTransform.position as any as pc.Vec3;
+    let worldRot = planeTransform.orientation as any as pc.Quat;
+    let worldTransform = new pc.Mat4().setTRS(worldPos, worldRot, pc.Vec3.ONE);
+
+    let worldVertices = planeVertices.map(vertex => worldTransform.transformPoint(vertex));
+    let lines = worldVertices.reduce<pc.Vec3[]>((lines, currentVertex, i, vertices) => {
+        var previousVertex = i > 0 ? vertices[i - 1] : vertices[vertices.length - 1];
+        lines.push(previousVertex);
+        lines.push(currentVertex);
+        return lines;
+    }, []);
 
     let color = new pc.Color(0, 1, 0);
-    app.renderLines(position, color as any);
+    app.renderLines(lines, color as any);
 }
 
 function onEndSession(session) {
