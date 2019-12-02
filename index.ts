@@ -59,6 +59,10 @@ function onSessionStarted(session: XRSession) {
     xrCameraEntity = app.root.findOne(node => 'camera' in node) as pc.Entity;
     session.requestReferenceSpace('local').then(refSpace => xrLocalRefSpace = refSpace);
 
+    xrCameraEntity.camera!.calculateProjection = (matrix) => {
+        if (xrCameraView) matrix.set(xrCameraView.projectionMatrix as any);
+    };
+
     app.autoRender = false;
     session.requestAnimationFrame(onXRFrame);
 
@@ -70,16 +74,16 @@ function onXRFrame(timestamp: number, frame: XRFrame) {
     let session = frame.session;
 
     let cameraPose = xrLocalRefSpace && frame.getViewerPose(xrLocalRefSpace);
-
     if (cameraPose) {
-        let cameraTransform = cameraPose.transform;
 
+        let cameraTransform = cameraPose.transform;
         let pos = cameraTransform.position;
         let rot = cameraTransform.orientation;
         xrCameraEntity.setPosition(pos.x, pos.y, pos.z);
         xrCameraEntity.setRotation(rot.x, rot.y, rot.z, rot.w);
 
-        let viewport = session.renderState.baseLayer!.getViewport(cameraPose.views[0]);
+        xrCameraView = cameraPose.views[0];
+        let viewport = session.renderState.baseLayer!.getViewport(xrCameraView);
         xrRenderTarget._colorBuffer = viewport;
 
         renderPlanes(frame);
@@ -195,6 +199,7 @@ function onTouchEnd() {
     entity.enabled = false;
 }
 
+let xrCameraView: XRView;
 let xrCameraEntity: pc.Entity;
 let xrRenderTarget: { _glFrameBuffer: WebGLFramebuffer, _colorBuffer?: XRViewport };
 let xrLocalRefSpace: XRReferenceSpace;
