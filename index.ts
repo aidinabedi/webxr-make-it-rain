@@ -51,6 +51,7 @@ function onSessionStarted(session: XRSession) {
 
     let renderTarget = new pc.RenderTarget({});
     app.scene.layers.getLayerById(pc.LAYERID_WORLD).renderTarget = renderTarget;
+    app.scene.layers.getLayerById(pc.LAYERID_IMMEDIATE).renderTarget = renderTarget;
 
     xrRenderTarget = renderTarget as any;
     xrRenderTarget._glFrameBuffer = baseLayer.framebuffer;

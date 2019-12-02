@@ -35,7 +35,7 @@
 					"projection": 0,
 					"farClip": 1000,
 					"clearColorBuffer": false,
-					"layers": [0],
+					"layers": [0, 3],
 					"priority": 0,
 					"fov": 45,
 					"clearDepthBuffer": false,
